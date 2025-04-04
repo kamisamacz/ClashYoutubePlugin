@@ -1,4 +1,4 @@
-const OVERLAY_URL = "http://192.168.88.45:8000/overlay/";
+const OVERLAY_URL = "https://clashyoutubeplugin-production.up.railway.app/overlay/";
 
 function injectOverlay() {
     if (document.getElementById("clash-overlay-frame")) return;

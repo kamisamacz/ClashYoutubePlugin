@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Clash Overlay",
-  "version": "1.0",
+  "version": "1",
   "description": "Zobrazuje Clash overlay nad YouTube videem.",
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["http://*/*", "https://*/*"],
