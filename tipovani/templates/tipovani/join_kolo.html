@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</h2>
+
+{% if existing_tip %}
+    <p>✅ Už jsi tipoval na: <strong>
+        {% if existing_tip.vybrany_team == "A" %}
+            {{ kolo.zapasnik_a }}
+        {% else %}
+            {{ kolo.zapasnik_b }}
+        {% endif %}
+    </strong></p>
+    {% if not kolo.uzavreno %}
+        <form method="post">
+            {% csrf_token %}
+            <p>Chceš změnit svůj tip?</p>
+            <button type="submit" name="team_choice" value="A">{{ kolo.zapasnik_a }}</button>
+            <button type="submit" name="team_choice" value="B">{{ kolo.zapasnik_b }}</button>
+        </form>
+    {% else %}
+        <p>Tipování je uzavřeno.</p>
+    {% endif %}
+{% else %}
+    {% if not kolo.uzavreno %}
+        <form method="post">
+            {% csrf_token %}
+            <p>Vyber tým:</p>
+            <button type="submit" name="team_choice" value="A">{{ kolo.zapasnik_a }}</button>
+            <button type="submit" name="team_choice" value="B">{{ kolo.zapasnik_b }}</button>
+        </form>
+    {% else %}
+        <p>Tipování je uzavřeno.</p>
+    {% endif %}
+{% endif %}
+
+<a href="{% url 'login:dashboard' %}">⬅️ Zpět na Dashboard</a>
+{% endblock %}

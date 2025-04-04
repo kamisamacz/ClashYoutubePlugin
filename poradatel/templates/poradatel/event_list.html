@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Seznam eventů</h2>
+
+{% for event in events %}
+    <div>
+        <h3>{{ event.name }}</h3>
+        <p>Datum: {{ event.date }}</p>
+        <p>Místo: {{ event.location }}</p>
+        <p>Volná místa: {{ event.available_slots }}</p>
+
+        {% if request.user.is_authenticated %}
+            {% if request.user in event.participants.all %}
+                <a href="{% url 'leave_event' event.id %}">❌ Odhlásit se</a>
+            {% else %}
+                <a href="{% url 'join_event' event.id %}">✅ Přihlásit se</a>
+            {% endif %}
+        {% else %}
+            <p>🔒 Přihlaste se pro účast.</p>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>Žádné eventy nejsou k dispozici.</p>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center; margin-top: 20px;">Tipování: {{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</h2>
+
+<div style="max-width: 500px; margin: 30px auto; background: rgba(34, 34, 34, 0.9); padding: 20px; border-radius: 15px; color: white;">
+    {% if existing_tip %}
+        <p style="text-align: center; font-size: 1.1em; background: rgba(68, 68, 68, 0.8); padding: 10px; border-radius: 10px;"><strong>Tvůj aktuální tip:</strong><br>
+            {% if existing_tip.vybrany_team == "A" %}
+                {{ kolo.zapasnik_a }}
+            {% elif existing_tip.vybrany_team == "B" %}
+                {{ kolo.zapasnik_b }}
+            {% endif %}
+        </p>
+    {% else %}
+        <p style="text-align: center; font-size: 1.1em; background: rgba(100, 100, 100, 0.3); padding: 10px; border-radius: 10px;">Ještě jsi netipoval.</p>
+    {% endif %}
+
+    <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                {% for radio in form.vybrany_team %}
+                    <label style="background: rgba(68, 68, 68, 0.9); padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s;" onmouseover="this.style.background='rgba(100,100,100,0.9)'" onmouseout="this.style.background='rgba(68,68,68,0.9)';">
+                        {{ radio.tag }} {{ radio.choice_label }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button type="submit" style="background: #4caf50; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">💾 Uložit tip</button>
+        </div>
+    </form>
+</div>
+
+<p style="text-align: center; margin-top: 30px;">
+    <a href="{% url 'login:dashboard' %}" style="color: #66ccff; text-decoration: none; font-weight: bold;">⬅️ Zpět na Dashboard</a>
+</p>
+{% endblock %}

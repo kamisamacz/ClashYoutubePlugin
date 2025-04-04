@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 50px auto; background: rgba(34, 34, 34, 0.8); padding: 30px; border-radius: 15px; text-align: center;">
+    <h2 style="margin-bottom: 20px;">Vytvořit nové tipovací kolo</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" style="background: #4caf50; color: white; padding: 12px 24px; font-size: 1em; border-radius: 8px; border: none; cursor: pointer; margin-top: 20px;">
+            ✅ Vytvořit kolo
+        </button>
+    </form>
+</div>
+{% endblock %}
