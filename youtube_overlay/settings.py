@@ -156,3 +156,5 @@ LOGIN_REDIRECT_URL = "/dashboard/"  # 🚀 Opraveno na správnou URL
 LOGOUT_REDIRECT_URL = "/login/"  # 🚀 Přesměrování po odhlášení
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+"""me odvezou slibuju"""
