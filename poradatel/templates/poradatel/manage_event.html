@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load custom_filters %}
-
+"""nice"""
 {% block content %}
 <h2 style="text-align: center; margin-top: 20px;">Správa eventu: {{ event.name }}</h2>
 <p style="text-align: center;"><a href="{% url 'poradatel:event_highscore' event.id %}" style="color: #66ccff; text-decoration: none; font-weight: bold;">🏅 Zobrazit High Score</a></p>
