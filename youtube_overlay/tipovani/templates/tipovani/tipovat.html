@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Tipování{% endblock %}
+
+{% block content %}
+<h2>{{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Potvrdit tip</button>
+</form>
+{% endblock %}

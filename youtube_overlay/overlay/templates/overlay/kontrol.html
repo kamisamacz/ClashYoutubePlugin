@@ -1,0 +1,22 @@
+<form method="POST">
+    {% csrf_token %}
+
+    <label>
+        <input type="checkbox" name="is_enabled" {% if message.is_enabled %}checked{% endif %}>
+        Zapnout overlay
+    </label>
+
+    <br>
+
+    <label>
+        <input type="checkbox" name="is_visible" {% if message.is_visible %}checked{% endif %}>
+        Zobrazit text
+    </label>
+
+    <br>
+
+    <input type="text" name="text" value="{{ message.text }}">
+    <br>
+
+    <button type="submit">Uložit</button>
+</form>

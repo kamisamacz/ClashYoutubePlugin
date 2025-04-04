@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přihlášení</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgba(68, 68, 68, 0.8);
+            color: white;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 20px;
+            background: rgba(34, 34, 34, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            color: #66ff66;
+            animation: pulseGreen 2s infinite;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background: #66ff66;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #99ff99;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .event-list {
+            margin-top: 30px;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #444444;
+            color: white;
+            text-align: center;
+            line-height: 60px;
+            font-family: Arial, sans-serif;
+        }
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .cookie-consent {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            background: #222;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9em;
+            z-index: 1000;
+        }
+        .cookie-consent button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background: #66ff66;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        @keyframes pulseGreen {
+            0% { text-shadow: 0 0 5px #66ff66; }
+            50% { text-shadow: 0 0 20px #66ff66; }
+            100% { text-shadow: 0 0 5px #66ff66; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Přihlášení</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label>Uživatelské jméno:</label>
+            <input type="text" name="username" required>
+
+            <label>Heslo:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Přihlásit se</button>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </form>
+
+        <div class="event-list">
+            <h2>Dostupné eventy</h2>
+            <ul>
+                {% for event in events %}
+                    <li>{{ event.name }} - {{ event.date }} - {{ event.location }}</li>
+                {% empty %}
+                    <li>Žádný event v dohlednu.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="cookie-consent" id="cookie-consent">
+        Tato stránka používá cookies pro zlepšení uživatelského zážitku.
+        <button onclick="document.getElementById('cookie-consent').style.display='none'">Rozumím</button>
+    </div>
+
+    <footer>
+        <p>Copyright © <a href="https://instagram.com/kamisamacz">📸 kamisamacz</a></p>
+    </footer>
+</body>
+</html>

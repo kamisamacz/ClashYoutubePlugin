@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Overlay</title>
+    <style>
+        body {
+            margin: 0;
+            background: rgba(0, 0, 0, 0); /* Transparentní pozadí */
+            color: white;
+            font-family: "Segoe UI", Arial, sans-serif;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .team, .scoreboard {
+            background: rgba(34, 34, 34, 0.8); /* Boxy týmů i highscore */
+            border-radius: 20px;
+            padding: 50px;
+            width: 450px;
+            min-height: 700px;
+        }
+
+        /* ✨ DÝCHAJÍCÍ TEXT PRO NÁZEV TÝMU */
+        .team h2 {
+            margin-top: 0;
+            font-size: 3em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            animation: breatheGlow 2s ease-in-out infinite;
+            text-shadow: 0 0 15px rgba(0, 153, 255, 0.7),
+                         0 0 45px rgba(20, 153, 255, 0.5),
+                         0 0 60px rgba(80, 153, 255, 0.6);
+        }
+
+        @keyframes breatheGlow {
+            0% {
+                text-shadow: 0 0 5px rgba(0, 153, 255, 0.6),
+                             0 0 20px rgba(0, 153, 255, 0.3),
+                             0 0 40px rgba(0, 153, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(0, 153, 255, 0.8),
+                             0 0 50px rgba(0, 153, 255, 0.7),
+                             0 0 80px rgba(0, 153, 255, 0.6);
+            }
+            100% {
+                text-shadow: 0 0 5px rgba(0, 153, 255, 0.6),
+                             0 0 10px rgba(0, 153, 255, 0.5),
+                             0 0 20px rgba(0, 153, 255, 0.6);
+            }
+        }
+
+        .scoreboard h2 {
+            margin-top: 0;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 6px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            background: rgba(68, 68, 68, 1);
+            padding: 6px 10px;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        table th, table td {
+            border: 1px solid rgba(153, 153, 153, 1);
+            padding: 10px;
+        }
+
+        table th {
+            background: rgba(102, 102, 102, 1);
+        }
+
+        table td {
+            background: rgba(34, 34, 34, 1);
+        }
+
+        .medal {
+            font-size: 1.4em;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<!-- TIPY sekce -->
+<div id="tipy-section" class="container" style="display: none;">
+    <div class="team">
+        <h2 id="teamA-name">Tým A</h2>
+        <ul id="teamA-list"></ul>
+    </div>
+    <div class="team">
+        <h2 id="teamB-name">Tým B</h2>
+        <ul id="teamB-list"></ul>
+    </div>
+</div>
+
+<!-- HIGHSCORE sekce -->
+<div id="highscore-section" class="container" style="display: none;">
+    <div class="scoreboard">
+        <h2>Highscore</h2>
+        <table id="highscore-table">
+            <thead>
+                <tr>
+                    <th>Pořadí</th>
+                    <th class="left">Uživatel</th>
+                    <th class="right">Body</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    async function fetchOverlay() {
+        try {
+            const response = await fetch('/overlay/get/');
+            const data = await response.json();
+
+            const tipySection = document.getElementById('tipy-section');
+            const highscoreSection = document.getElementById('highscore-section');
+
+            tipySection.style.display = 'none';
+            highscoreSection.style.display = 'none';
+
+            if (!data.visible) return;
+
+            if (data.type === "tipy") {
+                tipySection.style.display = 'flex';
+
+                document.getElementById('teamA-name').textContent = data.zapasnik_a || "Tým A";
+                document.getElementById('teamB-name').textContent = data.zapasnik_b || "Tým B";
+
+                const teamAList = document.getElementById('teamA-list');
+                const teamBList = document.getElementById('teamB-list');
+                teamAList.innerHTML = "";
+                teamBList.innerHTML = "";
+
+                (data.team_a || []).forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = user;
+                    teamAList.appendChild(li);
+                });
+
+                (data.team_b || []).forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = user;
+                    teamBList.appendChild(li);
+                });
+
+                const maxHeight = Math.max(teamAList.offsetHeight, teamBList.offsetHeight);
+                teamAList.style.minHeight = maxHeight + "px";
+                teamBList.style.minHeight = maxHeight + "px";
+            }
+
+            else if (data.type === "highscore") {
+                highscoreSection.style.display = 'flex';
+
+                const tbody = document.querySelector("#highscore-table tbody");
+                tbody.innerHTML = "";
+
+                (data.highscore || []).forEach((entry, index) => {
+                    const tr = document.createElement('tr');
+
+                    let medal = "";
+                    if (index === 0) medal = "🥇";
+                    else if (index === 1) medal = "🥈";
+                    else if (index === 2) medal = "🥉";
+                    else medal = index + 1;
+
+                    tr.innerHTML = `
+                        <td class="medal">${medal}</td>
+                        <td class="left"><strong>${entry.username}</strong></td>
+                        <td class="right"><strong>${entry.points}</strong></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+        } catch (error) {
+            console.error("Chyba při načítání overlay:", error);
+        }
+    }
+
+    setInterval(fetchOverlay, 2000);
+    fetchOverlay();
+</script>
+
+</body>
+</html>

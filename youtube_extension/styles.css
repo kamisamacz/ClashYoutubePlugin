@@ -1,0 +1,14 @@
+#youtube-overlay-iframe {
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+#youtube-overlay-iframe.hidden {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Styly pro YouTube player container */
+ytd-player {
+  position: relative;
+}

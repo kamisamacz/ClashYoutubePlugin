@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Vyhodnotit kolo: {{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="vitez" value="A">🏆 Vyhrál {{ kolo.zapasnik_a }}</button>
+    <button type="submit" name="vitez" value="B">🏆 Vyhrál {{ kolo.zapasnik_b }}</button>
+</form>
+
+<a href="{% url 'poradatel:manage_event' kolo.event.id %}">⬅️ Zpět na správu eventu</a>
+{% endblock %}
