@@ -158,3 +158,7 @@ LOGOUT_REDIRECT_URL = "/login/"  # 🚀 Přesměrování po odhlášení
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 """me odvezou slibuju xdd"""
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://clashyoutubeplugin-production.up.railway.app"
+]
