@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Seznam eventů</h2>
+<h2 style="text-align: center;">📅 Seznam veřejných eventů</h2>
 
 {% for event in events %}
-    <div>
-        <h3>{{ event.name }}</h3>
-        <p>Datum: {{ event.date }}</p>
-        <p>Místo: {{ event.location }}</p>
-        <p>Volná místa: {{ event.available_slots }}</p>
+    <div style="background: #333; color: white; padding: 15px; margin: 15px auto; max-width: 600px; border-radius: 10px;">
+        <h3 style="margin: 0;">{{ event.name }}</h3>
+        <p>🗓 Datum: {{ event.date }}</p>
+        <p>📍 Místo: {{ event.location }}</p>
+        <p>👥 Volná místa: {{ event.available_slots }}</p>
 
         {% if request.user.is_authenticated %}
             {% if request.user in event.participants.all %}
-                <a href="{% url 'leave_event' event.id %}">❌ Odhlásit se</a>
+                <p style="color: lightgreen;">✅ Jsi přihlášen</p>
+                <a href="{% url 'leave_event' event.id %}" style="color: #ff6666;">❌ Odhlásit se</a>
             {% else %}
-                <a href="{% url 'join_event' event.id %}">✅ Přihlásit se</a>
+                <a href="{% url 'join_event' event.id %}" style="color: #66ff66;">✅ Přihlásit se</a>
             {% endif %}
         {% else %}
-            <p>🔒 Přihlaste se pro účast.</p>
+            <p style="color: #ccc;">🔒 Přihlas se pro možnost účasti.</p>
         {% endif %}
     </div>
 {% empty %}
-    <p>Žádné eventy nejsou k dispozici.</p>
+    <p style="text-align: center;"><center>Žádné eventy nejsou k dispozici.</center></p>
 {% endfor %}
-
 {% endblock %}

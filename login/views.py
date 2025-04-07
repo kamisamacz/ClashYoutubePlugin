@@ -8,6 +8,8 @@ from tipovani.models import Kolo, Tip
 import json  # ➕ potřebné pro serializaci seznamu ID
 
 def login_view(request):
+    all_events = Event.objects.all()  # přidáme všechny eventy
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -20,15 +22,15 @@ def login_view(request):
             # Uživatele nenalezen -> vytvoříme ho
             if username and password:
                 user = User.objects.create_user(username=username, password=password)
-                for event in Event.objects.all():
+                for event in all_events:
                     event.participants.add(user)
                 login(request, user)
                 return redirect("login:dashboard")
             else:
                 error_message = "Zadej jméno a heslo."
-                return render(request, "login/login.html", {"error_message": error_message})
+                return render(request, "login/login.html", {"error": error_message, "events": all_events})
 
-    return render(request, "login/login.html")
+    return render(request, "login/login.html", {"events": all_events})
 
 
 @login_required
