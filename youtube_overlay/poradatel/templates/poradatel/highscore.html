@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>High Score pro event: {{ event.name }}</h2>
+
+<ul>
+    {% for username, score in scores %}
+        <li><strong>{{ username }}</strong>: {{ score }} bodů</li>
+    {% empty %}
+        <li>Žádné skóre zatím není k dispozici.</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{% url 'poradatel:manage_event' event.id %}">⬅️ Zpět na správu eventu</a></p>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Tipování pro event: {{ event.name }}</h2>
+
+<ul>
+    {% for kolo in kola %}
+        <li>
+            <strong>{{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</strong> -
+            {% if tipy.kolo.id %}
+                Tvůj tip: <strong>Tým {{ tipy.kolo.id.vybrany_team }}</strong>
+            {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="kolo_id" value="{{ kolo.id }}">
+                    <label>
+                        <input type="radio" name="vybrany_team" value="A" required>
+                        {{ kolo.zapasnik_a }}
+                    </label>
+                    <label>
+                        <input type="radio" name="vybrany_team" value="B" required>
+                        {{ kolo.zapasnik_b }}
+                    </label>
+                    <button type="submit">Tipovat</button>
+                </form>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>Žádné otevřené tipovací kolo</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'login:dashboard' %}">⬅️ Zpět na Dashboard</a>
+{% endblock %}

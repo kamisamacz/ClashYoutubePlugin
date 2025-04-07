@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+      min-width: 160px;
+    }
+    button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h3>Clash Overlay</h3>
+  <button id="toggle">Zapnout / Vypnout Overlay</button>
+
+  <script>
+    document.getElementById("toggle").addEventListener("click", async () => {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          const iframe = document.getElementById("clash-overlay-frame");
+          if (iframe) {
+            iframe.style.display = (iframe.style.display === "none") ? "block" : "none";
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>

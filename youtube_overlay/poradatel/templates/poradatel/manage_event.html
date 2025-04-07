@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block content %}
+<h2 style="text-align: center; margin-top: 20px;">Správa eventu: {{ event.name }}</h2>
+<p style="text-align: center;"><a href="{% url 'poradatel:event_highscore' event.id %}" style="color: #66ccff; text-decoration: none; font-weight: bold;">🏅 Zobrazit High Score</a></p>
+
+<div style="margin: 20px auto; max-width: 800px;">
+    <h3>🎮 Overlay Ovládání</h3>
+    <form method="post" action="{% url 'overlay:update_overlay' event.id %}" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        {% csrf_token %}
+        <button type="submit" name="action" value="show_tipy" style="background: #444; color: white; padding: 10px; border-radius: 8px; border: none; cursor: pointer;">📢 Zobrazit Tipování</button>
+        <button type="submit" name="action" value="show_highscore" style="background: #444; color: white; padding: 10px; border-radius: 8px; border: none; cursor: pointer;">🏆 Zobrazit Highscore</button>
+        <button type="submit" name="action" value="hide" style="background: #444; color: white; padding: 10px; border-radius: 8px; border: none; cursor: pointer;">❌ Skrýt Overlay</button>
+    </form>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="{% url 'tipovani:create_kolo' event.id %}" style="background: #4caf50; color: white; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: bold;">➕ Přidat nové tipovací kolo</a>
+    </div>
+
+    <h3>Aktivní kola</h3>
+    <ul style="padding-left: 20px;">
+        {% for kolo in kola %}
+            {% if not kolo.vitez %}
+            <li style="margin-bottom: 20px; background-color: rgba(34, 34, 34, 0.8); padding: 15px; border-radius: 10px;">
+                <strong>{{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</strong>
+                {% if kolo.uzavreno %}
+                    <span style="color: red;">(Uzavřeno)</span>
+                    — Vyhodnotit:
+                    <a href="{% url 'tipovani:vyhodnotit_kolo' kolo.id 'A' %}" style="color: #66ccff;">🏆 {{ kolo.zapasnik_a }}</a> |
+                    <a href="{% url 'tipovani:vyhodnotit_kolo' kolo.id 'B' %}" style="color: #66ccff;">🏆 {{ kolo.zapasnik_b }}</a> |
+                    <a href="{% url 'tipovani:vyhodnotit_kolo' kolo.id 'X' %}" style="color: #66ccff;">🤝 Remíza</a>
+                {% else %}
+                    <span style="color: green;">(Otevřené)</span>
+                    <a href="{% url 'tipovani:uzavrit_kolo' kolo.id %}" style="color: #66ccff;">🔒 Uzavřít</a>
+                {% endif %}
+                <div style="margin-top: 10px;">
+                    <strong>Tipy:</strong>
+                    <ul>
+                        {% for tip in tipy_per_kolo|get_item:kolo.id|get_item:"rozhodnuti" %}
+                            <li><b>{{ tip.username }}</b> tipuje {{ tip.team }}</li>
+                        {% empty %}
+                            <li>Nikdo zatím netipoval.</li>
+                        {% endfor %}
+                    </ul>
+                    <strong>Nerozhodnutí:</strong>
+                    <ul>
+                        {% for username in tipy_per_kolo|get_item:kolo.id|get_item:"nerozhodnuti" %}
+                            <li>{{ username }}</li>
+                        {% empty %}
+                            <li>Všichni už tipovali.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <details open>
+        <summary style="margin-bottom: 10px; font-weight: bold; font-size: 1.1em; cursor: pointer;">📋 Vyhodnocená kola (klikni pro sbalení/rozbalení)</summary>
+        <ul style="padding-left: 20px;">
+            {% for kolo in kola %}
+                {% if kolo.uzavreno and kolo.vitez %}
+                <li style="margin-bottom: 20px; background-color: rgba(34, 34, 34, 0.8); padding: 15px; border-radius: 10px;">
+                    <strong>{{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }}</strong>
+                    <span style="color: red;">(Uzavřeno)</span>
+                    <a href="{% url 'tipovani:otevrit_kolo' kolo.id %}" style="color: #66ccff;">🔓 Otevřít</a>
+                    <strong> | Vítěz:</strong>
+                    {% if kolo.vitez == "A" %}
+                        {{ kolo.zapasnik_a }}
+                    {% elif kolo.vitez == "B" %}
+                        {{ kolo.zapasnik_b }}
+                    {% else %}
+                        Remíza 🤝
+                    {% endif %}
+                    <div style="margin-top: 10px;">
+                        <strong>Tipy:</strong>
+                        <ul>
+                            {% for tip in tipy_per_kolo|get_item:kolo.id|get_item:"rozhodnuti" %}
+                                <li><b>{{ tip.username }}</b> tipuje {{ tip.team }}</li>
+                            {% empty %}
+                                <li>Nikdo zatím netipoval.</li>
+                            {% endfor %}
+                        </ul>
+                        <strong>Nerozhodnutí:</strong>
+                        <ul>
+                            {% for username in tipy_per_kolo|get_item:kolo.id|get_item:"nerozhodnuti" %}
+                                <li>{{ username }}</li>
+                            {% empty %}
+                                <li>Všichni už tipovali.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </details>
+</div>
+
+<div style="margin: 40px auto; max-width: 600px;">
+    <h3>🏆 Highscore eventu</h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 1.1em;">
+        <tr style="background: #666; color: white;">
+            <th style="padding: 8px; border: 1px solid #999;">Pořadí</th>
+            <th style="padding: 8px; border: 1px solid #999;">Uživatel</th>
+            <th style="padding: 8px; border: 1px solid #999;">Body</th>
+        </tr>
+        {% for username, score in highscore %}
+            <tr>
+                <td style="padding: 8px; border: 1px solid #999; text-align: center;">{{ forloop.counter }}</td>
+                <td style="padding: 8px; border: 1px solid #999;">{{ username }}</td>
+                <td style="padding: 8px; border: 1px solid #999; text-align: right;">{{ score }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">Zatím žádné body.</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
