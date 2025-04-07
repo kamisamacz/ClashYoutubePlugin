@@ -160,7 +160,7 @@ LOGOUT_REDIRECT_URL = "/login/"  # 🚀 Přesměrování po odhlášení
 # Production only:
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-"""me odvezou slibuju xdd"""
+"""me odvezou slibuju xddddd"""
 
 CSRF_TRUSTED_ORIGINS = [
     "https://clashyoutubeplugin-production.up.railway.app"
