@@ -79,7 +79,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Aplikace poběží na `http://127.0.0.1:8000`
+Aplikace poběží na lokálně na`http://127.0.0.1:8000` nebo na deploy serveru `https://clashyoutubeplugin-production.up.railway.app/`
 
 ---
 
