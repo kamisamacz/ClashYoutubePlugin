@@ -88,7 +88,7 @@ Aplikace poběží na `http://127.0.0.1:8000`
 1. Otevři `chrome://extensions/`
 2. Zapni **Developer mode**
 3. Klikni na **Load unpacked** a vyber složku `chrome_extension`
-4. V pluginu nastav správnou IP adresu nebo hostname pro overlay (`http://192.168.88.45:8000/overlay/`)
+4. V pluginu nastav správnou IP adresu nebo hostname pro overlay (`http://<yourIP/website>:8000/overlay/`)
 
 ---
 
