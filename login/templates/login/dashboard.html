@@ -1,56 +1,39 @@
 {% extends "base.html" %}
 {% load custom_filters %}
-
+<pre>{{ event_ids_json }}</pre>
 {% block content %}
-
 <div style="padding: 10px; max-width: 700px; margin: auto; padding-bottom: 60px;">
-
-{% for event in events %}
-
+    {% for event in events %}
     <div style="background: rgba(34,34,34,0.8); border-radius: 15px; padding: 15px; margin-bottom: 20px; color: white;">
-        <h3 style="margin-top: 0; text-align: center; font-size: 1.4em; animation: pulseText 2s infinite; color: #66ccff; text-shadow: 0 0 10px #66ccff;">
+        <h3 style="text-align: center; font-size: 1.4em; animation: pulseText 2s infinite; color: #66ccff;">
             {{ event.name }}
         </h3>
 
-        <div style="background: rgba(68, 68, 68, 0.9); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
+        <div style="background: rgba(68, 68, 68, 0.9); padding: 10px; border-radius: 10px;">
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-                <div style="flex: 1 1 45%; margin-bottom: 10px;"><strong>🗓 Datum:</strong> {{ event.date }}</div>
-                <div style="flex: 1 1 45%; margin-bottom: 10px;"><strong>📍 Místo:</strong> {{ event.location }}</div>
-                <div style="flex: 1 1 45%; margin-bottom: 10px;"><strong>👥 Volná místa:</strong> {{ event.free_slots }}</div>
+                <div><strong>🗓 Datum:</strong> {{ event.date }}</div>
+                <div><strong>📍 Místo:</strong> {{ event.location }}</div>
+                <div><strong>👥 Volná místa:</strong> {{ event.free_slots }}</div>
 
                 {% for highscore in highscore_data %}
                     {% if highscore.event.id == event.id %}
-                        <div style="flex: 1 1 45%; margin-bottom: 10px;"><strong>🏆 Body:</strong> {{ highscore.score }}</div>
-                        <div style="flex: 1 1 45%; margin-bottom: 10px;"><strong>📊 Pořadí:</strong> {{ highscore.rank }}. z {{ highscore.total }}</div>
+                        <div><strong>🏆 Body:</strong> {{ highscore.score }}</div>
+                        <div><strong>📊 Pořadí:</strong> {{ highscore.rank }}. z {{ highscore.total }}</div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
 
         {% if request.user in event.participants.all %}
-            <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 10px;">
-                <span style="color: lightgreen;"><strong>✅ Jsi přihlášen</strong></span>
-                <a href="{% url 'poradatel:leave_event' event.id %}" style="color: #ff6666; font-weight: bold;">❌ Odhlásit se</a>
+            <div style="text-align: center; margin: 10px 0;">
+                <span style="color: lightgreen;"><strong>✅ Jsi přihlášen</strong></span> |
+                <a href="{% url 'poradatel:leave_event' event.id %}" style="color: #ff6666;">❌ Odhlásit se</a>
             </div>
 
-            <h4 style="margin-top: 15px; font-size: 1.2em;">🎯 Tipovací kola:</h4>
+            <h4 style="font-size: 1.2em;">🎯 Tipovací kola:</h4>
             <div style="background: rgba(68, 68, 68, 0.9); padding: 10px; border-radius: 10px;">
-                <ul style="padding-left: 15px;">
-                    {% for kolo in kola %}
-                        {% if kolo.event.id == event.id %}
-                            {% if not kolo.uzavreno %}
-                                <li style="margin-bottom: 5px; background: rgba(100,100,100,0.4); padding: 8px; border-radius: 8px;">
-                                    {{ kolo.zapasnik_a }} vs {{ kolo.zapasnik_b }} —
-                                    {% if tip_dict|get_item:kolo.id %}
-                                        Tvůj tip: {% if tip_dict|get_item:kolo.id == "A" %}{{ kolo.zapasnik_a }}{% else %}{{ kolo.zapasnik_b }}{% endif %}
-                                    {% else %}
-                                        Ještě jsi netipoval
-                                    {% endif %}
-                                    — <a href="{% url 'tipovani:kolo_detail' kolo.id %}" style="color: #66ccff; font-weight: bold;">🎯 Tipovat</a>
-                                </li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
+                <ul id="kola-container-{{ event.id }}" class="kola-container" data-event-id="{{ event.id }}" style="padding-left: 15px;">
+                    <li>⏳ Načítám kola...</li>
                 </ul>
 
                 <details>
@@ -65,10 +48,11 @@
                                     {% else %}
                                         Tipování bylo uzavřeno, netipoval jsi
                                     {% endif %}
-
                                     {% if kolo.vitez %}
                                         <strong> | Vítěz:</strong>
-                                        {% if kolo.vitez == "A" %}{{ kolo.zapasnik_a }}{% else %}{{ kolo.zapasnik_b }}{% endif %}
+                                        {% if kolo.vitez == "A" %}{{ kolo.zapasnik_a }}
+                                        {% elif kolo.vitez == "B" %}{{ kolo.zapasnik_b }}
+                                        {% else %}Remíza{% endif %}
                                     {% endif %}
                                 </li>
                             {% endif %}
@@ -77,36 +61,19 @@
                 </details>
             </div>
         {% else %}
-            <p style="text-align: center;"><a href="{% url 'poradatel:join_event' event.id %}" style="color: #66ff66; font-weight: bold;">✅ Přihlásit se</a></p>
+            <p style="text-align: center;">
+                <a href="{% url 'poradatel:join_event' event.id %}" style="color: #66ff66; font-weight: bold;">✅ Přihlásit se</a>
+            </p>
         {% endif %}
     </div>
-{% empty %}
-    <p style="text-align:center;">Žádné eventy nejsou k dispozici.</p>
-{% endfor %}
+    {% empty %}
+        <p style="text-align:center;">Žádné eventy nejsou k dispozici.</p>
+    {% endfor %}
 </div>
 {% endblock %}
 
-"""<footer style="
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #444444;
-    color: white;
-    padding: 15px 0;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    width: 100%;
-    box-sizing: border-box;
-">
-    <p style="margin: 0; color: black;">
-        Copyright ©
-        <a href="https://instagram.com/kamisamacz"
-           style="color: white; text-decoration: none; font-weight: bold;">
-           📸 kamisamacz
-        </a>
-    </p>
-</footer>"""
+
+
 
 <style>
 @keyframes pulseText {
@@ -115,3 +82,52 @@
     100% { text-shadow: 0 0 5px #66ccff; }
 }
 </style>
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("✅ JS načten");
+
+    const eventIds = {{ event_ids_json|safe }};
+    console.log("🔁 Načítám kola pro eventy:", eventIds);
+
+    function aktualizujKola(eventId) {
+        fetch(`/tipovani/api/otevrena_kola/${eventId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById(`kola-container-${eventId}`);
+                if (!container) {
+                    console.warn(`❗ Kontejner kola-container-${eventId} nenalezen.`);
+                    return;
+                }
+
+                container.innerHTML = '';
+                if (data.kola.length === 0) {
+                    container.innerHTML = '<li>Žádná aktivní kola</li>';
+                    return;
+                }
+
+                data.kola.forEach(kolo => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `${kolo.zapasnik_a} vs ${kolo.zapasnik_b} — ` +
+                    (kolo.tipoval
+                         ? `Tipoval jsi pro: ${kolo.vybrany_team === "A" ? kolo.zapasnik_a : kolo.zapasnik_b}`
+                         : `<a href="/tipovani/kolo/${kolo.id}/" style="color:#66ccff;font-weight:bold;">🎯 Tipovat</a>`);
+
+                    li.style.marginBottom = '5px';
+                    li.style.background = 'rgba(100,100,100,0.4)';
+                    li.style.padding = '8px';
+                    li.style.borderRadius = '8px';
+                    container.appendChild(li);
+                });
+            })
+            .catch(error => console.error('❌ Chyba při načítání kol:', error));
+    }
+
+    eventIds.forEach(aktualizujKola);
+
+    setInterval(() => {
+        eventIds.forEach(aktualizujKola);
+    }, 2000);
+});
+</script>
+{% endblock %}

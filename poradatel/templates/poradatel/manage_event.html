@@ -19,7 +19,7 @@
     </div>
 
     <h3>Aktivní kola</h3>
-    <ul style="padding-left: 20px;">
+    <ul style="padding-left: 20px;" id="kola-wrapper" data-event-id="{{ event.id }}">
         {% for kolo in kola %}
             {% if not kolo.vitez %}
             <li style="margin-bottom: 20px; background-color: rgba(34, 34, 34, 0.8); padding: 15px; border-radius: 10px;">
@@ -36,21 +36,9 @@
                 {% endif %}
                 <div style="margin-top: 10px;">
                     <strong>Tipy:</strong>
-                    <ul>
-                        {% for tip in tipy_per_kolo|get_item:kolo.id|get_item:"rozhodnuti" %}
-                            <li><b>{{ tip.username }}</b> tipuje {{ tip.team }}</li>
-                        {% empty %}
-                            <li>Nikdo zatím netipoval.</li>
-                        {% endfor %}
-                    </ul>
+                    <ul class="rozhodnuti"></ul>
                     <strong>Nerozhodnutí:</strong>
-                    <ul>
-                        {% for username in tipy_per_kolo|get_item:kolo.id|get_item:"nerozhodnuti" %}
-                            <li>{{ username }}</li>
-                        {% empty %}
-                            <li>Všichni už tipovali.</li>
-                        {% endfor %}
-                    </ul>
+                    <ul class="nerozhodnuti"></ul>
                 </div>
             </li>
             {% endif %}
@@ -120,4 +108,28 @@
         {% endfor %}
     </table>
 </div>
+
+<script>
+function aktualizujTipovani(eventId) {
+    fetch(`/tipovani/api/kola_tipovani/${eventId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const wrapper = document.querySelector('#kola-wrapper');
+            if (!wrapper) return;
+
+            const blocks = wrapper.querySelectorAll('li');
+            data.kola.forEach((kolo, index) => {
+                const rozhodnuti = blocks[index].querySelector('.rozhodnuti');
+                const nerozhodnuti = blocks[index].querySelector('.nerozhodnuti');
+
+                rozhodnuti.innerHTML = kolo.rozhodnuti.map(t => `<li><b>${t.username}</b> tipuje ${t.team}</li>`).join('') || '<li>Nikdo zatím netipoval.</li>';
+                nerozhodnuti.innerHTML = kolo.nerozhodnuti.map(u => `<li>${u}</li>`).join('') || '<li>Všichni už tipovali.</li>';
+            });
+        });
+}
+setInterval(() => {
+    const eventId = {{ event.id }};
+    aktualizujTipovani(eventId);
+}, 300);
+</script>
 {% endblock %}
