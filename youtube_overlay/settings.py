@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'youtube_overlay.urls'
@@ -130,7 +131,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -155,7 +157,8 @@ X_FRAME_OPTIONS = "ALLOWALL"
 LOGIN_REDIRECT_URL = "/dashboard/"  # 🚀 Opraveno na správnou URL
 LOGOUT_REDIRECT_URL = "/login/"  # 🚀 Přesměrování po odhlášení
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Production only:
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 """me odvezou slibuju xdd"""
 
