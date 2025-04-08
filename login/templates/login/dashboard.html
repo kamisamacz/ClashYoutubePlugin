@@ -109,9 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.kola.forEach(kolo => {
                     const li = document.createElement('li');
                     li.innerHTML = `${kolo.zapasnik_a} vs ${kolo.zapasnik_b} — ` +
-                    (kolo.tipoval
-                         ? `Tipoval jsi pro: ${kolo.vybrany_team === "A" ? kolo.zapasnik_a : kolo.zapasnik_b}`
-                         : `<a href="/tipovani/kolo/${kolo.id}/" style="color:#66ccff;font-weight:bold;">🎯 Tipovat</a>`);
+                        `<a href="/tipovani/kolo/${kolo.id}/" style="color:#66ccff;font-weight:bold;">🎯 ` +
+                        (kolo.tipoval ? "Změnit tip" : "Tipovat") + `</a>`;
+
+
+
 
                     li.style.marginBottom = '5px';
                     li.style.background = 'rgba(100,100,100,0.4)';

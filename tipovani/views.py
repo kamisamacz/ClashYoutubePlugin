@@ -114,7 +114,7 @@ def kolo_detail(request, kolo_id):
             Tip.objects.update_or_create(
                 user=request.user, kolo=kolo, defaults={"vybrany_team": vybrany_team}
             )
-            return redirect("tipovani:kolo_detail", kolo_id=kolo.id)
+            return redirect("login:dashboard")
     else:
         form = TipForm(initial={"vybrany_team": tip.vybrany_team if tip else None})
         form.fields["vybrany_team"].choices = choices
