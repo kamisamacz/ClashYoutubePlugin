@@ -104,7 +104,7 @@ Aplikace poběží na lokálně na`http://127.0.0.1:8000` nebo na deploy serveru
 
 
 ## ✨ Prezentace
-https://docs.google.com/presentation/d/1xmvv-A9zUaFVobJ_R_MiPuxK5CjiLRs-eVvJBdU29Xc/edit?usp=sharing
+**[Link](https://docs.google.com/presentation/d/1xmvv-A9zUaFVobJ_R_MiPuxK5CjiLRs-eVvJBdU29Xc/edit?usp=sharing)**
 
 
 ---
