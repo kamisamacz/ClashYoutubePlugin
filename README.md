@@ -21,6 +21,7 @@ Tento projekt je webová aplikace pro správu a zobrazování sportovních tipů
 - [🚀 Spuštění](#-spuštění)
 - [🧩 Plugin do prohlížeče](#-plugin-do-prohlížeče)
 - [✨ Vychytávky](#-vychytávky)
+- [✨ Prezentace](#-prezentace)
 - [📸 Autor](#-autor)
 
 ---
